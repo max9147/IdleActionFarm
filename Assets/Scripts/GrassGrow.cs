@@ -5,15 +5,14 @@ public class GrassGrow : MonoBehaviour
 {
     [SerializeField] private GameObject grassGrown;
     [SerializeField] private GameObject grassBlock;
-
-    private float growTime = 10f;
+    [SerializeField] private GameSettings gameSettings;
 
     private void Start(){
         StartCoroutine(GrowProcess());
     }
 
     private IEnumerator GrowProcess(){
-        yield return new WaitForSeconds(growTime);
+        yield return new WaitForSeconds(gameSettings.grassGrowTime);
         Instantiate(grassGrown, transform.position, transform.rotation, transform);
     }
 

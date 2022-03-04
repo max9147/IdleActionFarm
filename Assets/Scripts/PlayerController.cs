@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private FloatingJoystick joystick;
-    [SerializeField] private float moveSpeed;
+    [SerializeField] private GameSettings gameSettings;
 
     private Animator animator;
     private Rigidbody rb;
@@ -19,7 +17,7 @@ public class PlayerController : MonoBehaviour
         if (GetComponent<GrassCutting>().GetSlashingStatus())
             return;
 
-        rb.velocity = new Vector3(joystick.Horizontal * moveSpeed, rb.velocity.y, joystick.Vertical * moveSpeed);
+        rb.velocity = new Vector3(joystick.Horizontal * gameSettings.moveSpeed, rb.velocity.y, joystick.Vertical * gameSettings.moveSpeed);
 
         animator.SetFloat("Movement", Mathf.Abs(joystick.Horizontal) + Mathf.Abs(joystick.Vertical));
 

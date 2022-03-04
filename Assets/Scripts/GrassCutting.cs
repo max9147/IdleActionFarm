@@ -6,6 +6,7 @@ public class GrassCutting : MonoBehaviour
 {
     [SerializeField] private AnimationClip slashAnim;
     [SerializeField] private GameObject playerSickle;
+    [SerializeField] private ParticleSystem cutPS;
 
     private Animator animator;
     private List<GameObject> grassInRange;
@@ -17,20 +18,19 @@ public class GrassCutting : MonoBehaviour
         grassInRange = new List<GameObject>();
     }
 
-    private void OnTriggerEnter(Collider other){
-        if (other.CompareTag("Grass"))
-            grassInRange.Add(other.gameObject);
+    public void AddGrassInRange(GameObject grass){
+        grassInRange.Add(grass);
     }
 
-    private void OnTriggerExit(Collider other){
-        if (other.CompareTag("Grass"))
-            grassInRange.Remove(other.gameObject);
+    public void RemoveGrassInRange(GameObject grass){
+        grassInRange.Remove(grass);
     }
 
     private IEnumerator DestroyGrassWait(){
         yield return new WaitForSeconds(slashAnim.length / 2);
         foreach (var item in grassInRange){
             item.transform.parent.GetComponent<GrassGrow>().RespawnGrass();
+            Instantiate(cutPS, item.transform.position, item.transform.rotation);
             Destroy(item);
         }
         grassInRange.Clear();
@@ -40,6 +40,7 @@ public class GrassCutting : MonoBehaviour
         yield return new WaitForSeconds(slashAnim.length);
         isSlashing = false;
         playerSickle.SetActive(false);
+        GetComponent<Rigidbody>().isKinematic = false;
     }
 
     public bool GetSlashingStatus(){
@@ -57,6 +58,7 @@ public class GrassCutting : MonoBehaviour
         isSlashing = true;
         animator.SetTrigger("SlashGrass");
         playerSickle.SetActive(true);
+        GetComponent<Rigidbody>().isKinematic = true;
         StartCoroutine(DestroyGrassWait());
         StartCoroutine(SlashWait());
     }
